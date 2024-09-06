@@ -1,6 +1,68 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Pressable, Linking } from 'react-native';
 import theme from '../../theme';
 import Text from './Text';
+
+const formatCount = (count) => {
+    if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'k';
+    }
+    return count.toString();
+};
+
+const RepositoryItem = ({ repository, showGitHubButton }) => {
+    if (!repository) {
+        return null;
+    }
+    const {
+        fullName,
+        description,
+        language,
+        forksCount,
+        stargazersCount,
+        ratingAverage,
+        reviewCount,
+        ownerAvatarUrl,
+        url
+    } = repository;
+    return (
+        <View style={styles.container}>
+            <View style={styles.row}>
+                <Image source={{ uri: ownerAvatarUrl }} style={styles.avatar} />
+                <View style={styles.infoContainer}>
+                    <Text fontWeight='bold'>{fullName}</Text>
+                    <Text style={styles.description}>{description}</Text>
+                    <Text style={styles.language}>{language}</Text>
+                </View>
+            </View>
+            <View style={styles.statsContainer}>
+                <View style={styles.statItem}>
+                    <Text fontWeight='bold'>{formatCount(stargazersCount)}</Text>
+                    <Text>Stars</Text>
+                </View>
+                <View style={styles.statItem}>
+                    <Text fontWeight='bold'>{formatCount(forksCount)}</Text>
+                    <Text>Forks</Text>
+                </View>
+                <View style={styles.statItem}>
+                    <Text fontWeight='bold'>{formatCount(reviewCount)}</Text>
+                    <Text>Reviews</Text>
+                </View>
+                <View style={styles.statItem}>
+                    <Text fontWeight='bold'>{ratingAverage}</Text>
+                    <Text>Rating</Text>
+                </View>
+            </View>
+            {showGitHubButton && (
+                <Pressable
+                    style={styles.button}
+                    onPress={() => Linking.openURL(url)}
+                >
+                    <Text style={styles.buttonText}>Open in GitHub</Text>
+                </Pressable>
+            )}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -8,7 +70,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.repositoryItem
     },
     row: {
-        flexDirection: 'row',
+        flexDirection: 'row'
     },
     avatar: {
         width: 50,
@@ -39,54 +101,18 @@ const styles = StyleSheet.create({
     },
     statItem: {
         alignItems: 'center'
+    },
+    button: {
+        borderRadius: 4,
+        padding: 8,
+        backgroundColor: '#0366d6',
+        alignItems: 'center',
+        margin: 10
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold'
     }
 });
-
-const formatCount = (count) => {
-    if (count >= 1000) {
-        return (count / 1000).toFixed(1) + 'k';
-    }
-    return count.toString();
-};
-
-const RepositoryItem = ({
-    fullName,
-    description,
-    language,
-    forksCount,
-    stargazersCount,
-    ratingAverage,
-    reviewCount,
-    ownerAvatarUrl
-}) => (
-    <View style={styles.container}>
-        <View style={styles.row}>
-            <Image source={{ uri: ownerAvatarUrl }} style={styles.avatar} />
-            <View style={styles.infoContainer}>
-                <Text fontWeight='bold'>{fullName}</Text>
-                <Text style={styles.description}>{description}</Text>
-                <Text style={styles.language}>{language}</Text>
-            </View>
-        </View>
-        <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-                <Text fontWeight='bold'>{formatCount(stargazersCount)}</Text>
-                <Text>Stars</Text>
-            </View>
-            <View style={styles.statItem}>
-                <Text fontWeight='bold'>{formatCount(forksCount)}</Text>
-                <Text>Forks</Text>
-            </View>
-            <View style={styles.statItem}>
-                <Text fontWeight='bold'>{formatCount(reviewCount)}</Text>
-                <Text>Reviews</Text>
-            </View>
-            <View style={styles.statItem}>
-                <Text fontWeight='bold'>{formatCount(ratingAverage)}</Text>
-                <Text>Rating</Text>
-            </View>
-        </View>
-    </View>
-);
 
 export default RepositoryItem;

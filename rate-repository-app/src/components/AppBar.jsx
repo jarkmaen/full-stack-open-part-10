@@ -4,7 +4,7 @@ import theme from '../../theme';
 import Text from './Text';
 import { Link, useNavigate } from 'react-router-native';
 import { useQuery, useApolloClient } from '@apollo/client';
-import { GET_ME } from '../graphql/queries';
+import { GET_CURRENT_USER } from '../graphql/queries';
 import useAuthStorage from '../hooks/useAuthStorage';
 
 const styles = StyleSheet.create({
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-    const { data } = useQuery(GET_ME);
+    const { data } = useQuery(GET_CURRENT_USER);
     const isAuthenticated = data?.me;
     const client = useApolloClient();
     const authStorage = useAuthStorage();
@@ -38,13 +38,26 @@ const AppBar = () => {
                     <Text style={styles.pressable}>Repositories</Text>
                 </Link>
                 {isAuthenticated ? (
-                    <Pressable onPress={handleSignOut}>
-                        <Text style={styles.pressable}>Sign out</Text>
-                    </Pressable>
+                    <>
+                        <Link to="/createreview" component={Pressable}>
+                            <Text style={styles.pressable}>Create a review</Text>
+                        </Link>
+                        <Link to="/myreviews" component={Pressable}>
+                            <Text style={styles.pressable}>My reviews</Text>
+                        </Link>
+                        <Pressable onPress={handleSignOut}>
+                            <Text style={styles.pressable}>Sign out</Text>
+                        </Pressable>
+                    </>
                 ) : (
-                    <Link to="/signin" component={Pressable}>
-                        <Text style={styles.pressable}>Sign in</Text>
-                    </Link>
+                    <>
+                        <Link to="/signin" component={Pressable}>
+                            <Text style={styles.pressable}>Sign in</Text>
+                        </Link>
+                        <Link to="/signup" component={Pressable}>
+                            <Text style={styles.pressable}>Sign up</Text>
+                        </Link>
+                    </>
                 )}
             </ScrollView>
         </View>
